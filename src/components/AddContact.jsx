@@ -40,6 +40,7 @@ const AddContact = () => {
     setLoading(true);
     try {
       await addContact(form);
+      navigate("/")
     } catch (err) {
       const errorMsg = err.message || "Failed to add contact";
       setError(errorMsg);
