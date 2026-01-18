@@ -34,7 +34,7 @@ function contactReducer(state, action) {
 
 export const ContactProvider = ({ children }) => {
   const [state, dispatch] = useReducer(contactReducer, initialState);
-  const API_URL = "http://localhost:5000/contacts";
+  const API_URL = "https://ic-assignment-5-server.onrender.com//contacts";
 
   const fetchContacts = async () => {
     const res = await axios.get(API_URL);
