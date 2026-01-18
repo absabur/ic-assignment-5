@@ -13,6 +13,7 @@ const AddContact = () => {
     address: "",
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,11 +37,14 @@ const AddContact = () => {
     setError("");
     if (!validate()) return;
 
+    setLoading(true);
     try {
       await addContact(form);
-      navigate("/");
     } catch (err) {
-      setError("Failed to add contact.");
+      const errorMsg = err.message || "Failed to add contact";
+      setError(errorMsg);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -126,13 +130,18 @@ const AddContact = () => {
 
               <div className="row">
                 <div className="col-md-9 offset-md-3">
-                  <button className="btn btn-primary me-2" type="submit">
-                    Save
+                  <button 
+                    className="btn btn-primary me-2" 
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? "Saving..." : "Save"}
                   </button>
                   <button
                     className="btn btn-outline-secondary"
                     type="button"
                     onClick={() => navigate("/")}
+                    disabled={loading}
                   >
                     Cancel
                   </button>

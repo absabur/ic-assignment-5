@@ -1,7 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 
 const DeleteConfirm = ({ open, contact, onClose, onConfirm }) => {
+  const [loading, setLoading] = useState(false);
+
   if (!open) return null;
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      if (onConfirm) {
+        await onConfirm(contact?.id);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="modal-backdrop">
@@ -16,16 +29,19 @@ const DeleteConfirm = ({ open, contact, onClose, onConfirm }) => {
           </p>
         </div>
         <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={onClose}>
+          <button 
+            className="btn btn-secondary" 
+            onClick={onClose}
+            disabled={loading}
+          >
             Cancel
           </button>
           <button
             className="btn btn-danger"
-            onClick={() => {
-              onConfirm && onConfirm(contact?.id);
-            }}
+            onClick={handleConfirm}
+            disabled={loading}
           >
-            Delete
+            {loading ? "Deleting..." : "Delete"}
           </button>
         </div>
       </div>

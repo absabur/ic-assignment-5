@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 const Modal = ({
   open,
@@ -10,6 +10,7 @@ const Modal = ({
   setShowContact,
 }) => {
   const [form, setForm] = useState(contact || {});
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
     setForm(contact || {});
@@ -21,9 +22,20 @@ const Modal = ({
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    if (onUpdate) onUpdate(contact.id, form);
-    onClose();
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      if (onUpdate) {
+        const result = await onUpdate(contact.id, form);
+        if (result?.success === false) {
+          setLoading(false);
+          return;
+        }
+      }
+      onClose();
+    } catch (err) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,11 +135,19 @@ const Modal = ({
             </button>
           ) : (
             <>
-              <button className="btn btn-secondary" onClick={onClose}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={onClose}
+                disabled={loading}
+              >
                 Cancel
               </button>
-              <button className="btn btn-primary" onClick={handleSave}>
-                Save
+              <button 
+                className="btn btn-primary" 
+                onClick={handleSave}
+                disabled={loading}
+              >
+                {loading ? "Saving..." : "Save"}
               </button>
             </>
           )}

@@ -3,6 +3,7 @@ import { ContactContext } from "../context/ContactContext";
 import { Link } from "react-router-dom";
 import ContactModal from "./ContactModal";
 import DeleteConfirm from "./DeleteConfirm";
+import LoadingSpinner from "./LoadingSpinner";
 
 const Home = () => {
   const { state, deleteContact, updateContact } = useContext(ContactContext);
@@ -36,8 +37,17 @@ const Home = () => {
   }
 
   const handleUpdate = async (id, updatedData) => {
-    await updateContact(id, updatedData);
+    const result = await updateContact(id, updatedData);
+    if (result.success) {
+      setEditContact(null);
+    } else {
+      showError(result.error || "Failed to update contact");
+    }
   };
+
+  if (state.loading) {
+    return <LoadingSpinner fullPage={true} />;
+  }
 
   return (
     <main className="py-5">
@@ -165,8 +175,8 @@ const Home = () => {
           open={true}
           contact={deleteCandidate}
           onClose={() => setDeleteCandidate(null)}
-          onConfirm={(id) => {
-            deleteContact(id);
+          onConfirm={async (id) => {
+            await deleteContact(id);
             setDeleteCandidate(null);
           }}
         />
