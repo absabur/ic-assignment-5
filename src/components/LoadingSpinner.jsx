@@ -6,6 +6,10 @@ const LoadingSpinner = ({ fullPage = false }) => {
       <div className="loading-overlay">
         <div className="spinner"></div>
         <p>Loading...</p>
+        <p>
+          Please wait! I am using free backend hosting. It may take a while to
+          start first time.
+        </p>
         <style>{`
           .loading-overlay {
             position: fixed;
